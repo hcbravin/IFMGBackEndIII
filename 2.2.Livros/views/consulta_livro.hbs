@@ -1,0 +1,15 @@
+{{> navbar }}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Detalhes do Livro</h5>
+        <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item"><strong>Titulo:</strong> {{livro.titulo}}</li>
+            <li class="list-group-item"><strong>Autor:</strong> {{livro.autor}}</li>
+            <li class="list-group-item"><strong>Categoria:</strong> {{livro.categoria.nome}}</li>
+            <li class="list-group-item"><strong>Status:</strong> <span class="badge text-uppercase text-bg-{{#if livro.status_btn}}success{{else}}danger{{/if}}">{{livro.status}}</span></li>
+            <li class="list-group-item"><strong>Criado em:</strong> {{livro.criada_em_fmt}}</li>
+            <li class="list-group-item"><strong>Atualizado em:</strong> {{livro.atualizada_em_fmt}}</li>
+        </ul>
+        <a href="/" class="btn btn-sm btn-secondary">Voltar</a>
+    </div>
+</div>
