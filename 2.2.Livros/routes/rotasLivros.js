@@ -10,5 +10,7 @@ router.post('/cadastrar', controllerLivros.cria_post);
 router.get('/consulta/:id', controllerLivros.consulta);
 // Rota para alteração de status da demanda
 router.post('/status/:id/:novo_status', controllerLivros.altera_status);
+// Rota para historico
+router.get('/historico', controllerLivros.historico_livros);
 
 module.exports = router;

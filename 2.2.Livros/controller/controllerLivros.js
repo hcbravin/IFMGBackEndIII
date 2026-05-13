@@ -31,7 +31,7 @@ exports.cria_post = async function (req, res) {
         erros.push({ msg: 'Autor é obrigatório' });
     }
     const urg = Number(novo_livro.categoria);
-    if (!novo_livro.categoria || Number.isNaN(urg) || urg > 0) {
+    if (!novo_livro.categoria || Number.isNaN(urg) || urg <= 0) {
         erros.push({ msg: 'Categoria não encontrada' });
     }
 
@@ -120,5 +120,95 @@ exports.altera_status = async function (req, res) {
     } catch (error) {
         console.error('Erro ao alterar status da demanda:', error);
         return res.status(500).send('Erro ao alterar status da demanda');
+    }
+};
+
+exports.historico_livros = async function (req, res) {
+    try {
+        const anoAtual = new Date().getFullYear();
+
+        // Buscar todos os livros com suas categorias
+        const livros = await Livro.findAll({
+            include: [{
+                model: Categoria,
+                as: 'categoria',
+                attributes: ['id', 'nome']
+            }],
+            order: [['criada_em', 'ASC']]
+        });
+
+        // Filtrar apenas livros de anos anteriores ao atual
+        const livrosAnosAnteriores = livros.filter(livro => {
+            const anoCriacao = new Date(livro.criada_em).getFullYear();
+            return anoCriacao < anoAtual;
+        });
+
+        // Se não houver livros em anos anteriores
+        if (livrosAnosAnteriores.length === 0) {
+            const contexto = {
+                titulo_pagina: 'Histórico de Cadastros',
+                temHistorico: false,
+                anos: []
+            };
+            
+            // Configurações de cache conforme solicitado
+            res.set('Cache-Control', 'public, max-age=10540800, s-maxage=15778476'); // 4 meses = 10540800s, 6 meses = 15778476s
+            
+            return res.render('historico', contexto);
+        }
+
+        // Agrupar livros por ano
+        const livrosPorAno = {};
+        
+        livrosAnosAnteriores.forEach(livro => {
+            const anoCriacao = new Date(livro.criada_em).getFullYear();
+            const categoriaNome = livro.categoria?.nome || 'Sem Categoria';
+            
+            if (!livrosPorAno[anoCriacao]) {
+                livrosPorAno[anoCriacao] = {
+                    ano: anoCriacao,
+                    total: 0,
+                    categorias: {},
+                    livros: []
+                };
+            }
+            
+            livrosPorAno[anoCriacao].total++;
+            livrosPorAno[anoCriacao].categorias[categoriaNome] = 
+                (livrosPorAno[anoCriacao].categorias[categoriaNome] || 0) + 1;
+            livrosPorAno[anoCriacao].livros.push(livro);
+        });
+
+        // Converter o objeto para array e ordenar por ano (decrescente)
+        const anosData = Object.values(livrosPorAno).sort((a, b) => b.ano - a.ano);
+
+        // Formatar datas dos livros para cada ano
+        anosData.forEach(ano => {
+            ano.livros.forEach(livro => {
+                livro.criada_em_fmt = new Date(livro.criada_em).toLocaleDateString('pt-BR');
+            });
+        });
+
+        const contexto = {
+            titulo_pagina: 'Histórico de Cadastros de Livros',
+            temHistorico: true,
+            anos: anosData,
+            anoAtual: anoAtual
+        };
+
+        // Configurações de cache:
+        // - public: pode ser armazenada em qualquer local (CDN, proxy, navegador)
+        // - max-age=10540800: 4 meses de cache no navegador (4 * 30 * 24 * 60 * 60)
+        // - s-maxage=15778476: 6 meses de cache em servidores intermediários/CDN
+        // - must-revalidate: revalidar com o servidor mesmo com cache válido
+        // - no-cache: sempre revalidar (mas pode servir cache se não modificado)
+        res.set('Cache-Control', 'public, max-age=10540800, s-maxage=15778476, must-revalidate, no-cache');
+        
+        // Express gera Etag automaticamente
+        return res.render('historico', contexto);
+
+    } catch (error) {
+        console.error('Erro ao gerar relatório histórico:', error);
+        return res.status(500).send('Erro ao gerar relatório histórico');
     }
 };

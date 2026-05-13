@@ -31,3 +31,14 @@ Dentro da pasta, rode:
 ```bash
   npm install
 ```
+
+
+## 2.2.Livro
+
+- Inclusão de Cache
+- Incusão de páginas de histórico
+- Inclusão da página inicial de administrador (modelo)
+- Inclusão da página Nossa História
+
+Buscou-se abordar nesta parte do projeto os conceitos de gerenciamento de cache das páginas.
+

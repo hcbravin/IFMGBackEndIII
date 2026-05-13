@@ -36,9 +36,9 @@
                                 action="/livros/status/{{id}}/{{#if status_btn}}emprestado{{else}}disponivel{{/if}}"
                                 class="ms-1">
                                 {{#if status_btn}}
-                                <button type="submit" class="btn btn-sm btn-success text-capitalize">{{status}}</button>
+                                <button type="submit" style="width: 110px;" class="btn btn-sm btn-success text-capitalize">{{status}}</button>
                                 {{else}}
-                                <button type="submit" class="btn btn-sm btn-danger text-capitalize">{{status}}</button>
+                                <button type="submit" style="width: 110px;" class="btn btn-sm btn-danger text-capitalize">{{status}}</button>
                                 {{/if}}
                             </form>
                         </td>

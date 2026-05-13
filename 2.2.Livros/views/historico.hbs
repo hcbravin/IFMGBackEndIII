@@ -1,0 +1,82 @@
+{{> navbar }}
+
+<div class="mb-4">
+    <h2 class="fw-bold"><i class="bi bi-graph-up me-2 text-success"></i>Histórico de Cadastros</h2>
+    <p class="text-muted">Relatório de livros cadastrados em anos anteriores a {{anoAtual}}</p>
+</div>
+
+{{#if temHistorico}}
+    {{#each anos}}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0"><i class="bi bi-calendar3 me-2"></i>Ano: {{ano}}</h4>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="alert alert-info">
+                        <strong><i class="bi bi-book me-2"></i>Total de livros no ano:</strong> 
+                        <span class="badge bg-primary fs-6 ms-2">{{total}}</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="alert alert-secondary">
+                        <strong><i class="bi bi-tags me-2"></i>Distribuição por categoria:</strong>
+                        <div class="mt-2">
+                            {{#each categorias}}
+                            <span class="badge bg-warning text-dark me-2 mb-1 p-2">
+                                <i class="bi bi-folder"></i> {{@key}}: {{this}}
+                            </span>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h6 class="mb-3"><i class="bi bi-list-ul me-2"></i>Livros cadastrados neste ano:</h6>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Título</th>
+                            <th>Autor</th>
+                            <th>Categoria</th>
+                            <th>Data de Cadastro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each livros}}
+                        <tr>
+                            <td>{{titulo}}</td>
+                            <td>{{autor}}</td>
+                            <td><span class="badge bg-secondary">{{categoria.nome}}</span></td>
+                            <td><i class="bi bi-calendar me-1"></i>{{criada_em_fmt}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+    
+    <div class="alert alert-success mt-3">
+        <i class="bi bi-info-circle me-2"></i>
+        <strong>Resumo:</strong> Foram encontrados registros em {{anos.length}} ano(s) anterior(es) a {{anoAtual}}.
+    </div>
+{{else}}
+    <div class="alert alert-warning text-center py-5 shadow-sm">
+        <i class="bi bi-emoji-frown fs-1 d-block mb-3"></i>
+        <h5>Nenhum livro cadastrado em anos anteriores a {{anoAtual}}</h5>
+        <p class="mb-0">Comece cadastrando livros para visualizar o histórico!</p>
+        <a href="/livros/cadastrar" class="btn btn-primary mt-3">
+            <i class="bi bi-plus-square me-1"></i> Cadastrar Primeiro Livro
+        </a>
+    </div>
+{{/if}}
+
+<div class="mt-4 text-end">
+    <a href="/" class="btn btn-sm btn-primary">
+        <i class="bi bi-house me-1"></i> Retornar ao Início
+    </a>
+</div>

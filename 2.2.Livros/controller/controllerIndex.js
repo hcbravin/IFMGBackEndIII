@@ -70,3 +70,52 @@ exports.tela_principal = async function (req, res) {
         return res.status(500).send('Erro ao listar Livros');
     }
 }
+
+exports.historia = async function (req, res) {
+    const contexto = {
+        titulo_pagina: 'Nossa História',
+    };
+    
+    // Configurações de cache:
+    // - Pode ser armazenada em servidores intermediários (public)
+    // - Tempo de validade: 6 meses (15778476 segundos ≈ 6 meses)
+    // - Navegador deve sempre revalidar com o servidor usando Etag (must-revalidate)
+    // - Força verificação no servidor mesmo com cache válido (no-cache = revalidação)
+    res.set('Cache-Control', 'public, max-age=15778476, must-revalidate, no-cache');
+
+    // Express gera Etag automaticamente
+    return res.render('historia', contexto);
+}
+
+exports.faq = async function (req, res) {
+    const contexto = {
+        titulo_pagina: 'FAQ: Perguntas Frequentes',
+    };
+    
+    // Configurações de cache:
+    // - Armazenada APENAS no navegador web (private)
+    // - Não pode ser armazenada em servidores intermediários ou CDN
+    // - Tempo de validade: 1 ano (31536000 segundos)
+    // - Navegador NÃO precisa consultar o servidor (immutable)
+    // - Conteúdo é considerado imutável durante o período de cache
+    res.set('Cache-Control', `private, max-age=31536000, immutable`);
+
+    // Express gera Etag automaticamente
+    return res.render('faq', contexto);
+}
+
+exports.responsavel = async function (req, res) {
+    const contexto = {
+        titulo_pagina: 'Pagina do Responsável',
+    };
+    
+    // Configurações de cache:
+    // - Página NÃO pode ser armazenada em cache em HIPÓTESE ALGUMA
+    // - Nem no navegador, nem em servidores intermediários, nem em CDN
+    // - Sempre buscar uma versão nova do servidor
+    // - Para informações sensíveis (dados pessoais, transações, etc.)
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+
+    // Express gera Etag automaticamente
+    return res.render('responsavel', contexto);
+}
