@@ -9,15 +9,6 @@ Este repositório tem como objetivo unificar todos os projetos desenvolvidos na 
 [@hcbravin](https://www.github.com/hcbravin) - Henrique Casagrande Bravin
 
 
-## 2.1.Livro
-
-Projeto de Biblioteca virtual do bairro com opções simples de CRUD onde é possível:
-
-- Cadastrar livro
-- Atualizar status do livro
-- Visualizar informações do livro
-
-
 
 ## Requisitos
 
@@ -32,7 +23,6 @@ Dentro da pasta, rode:
   npm install
 ```
 
-
 ## 2.2.Livro
 
 - Inclusão de Cache
@@ -41,4 +31,13 @@ Dentro da pasta, rode:
 - Inclusão da página Nossa História
 
 Buscou-se abordar nesta parte do projeto os conceitos de gerenciamento de cache das páginas.
+
+
+## 2.1.Livro
+
+Projeto de Biblioteca virtual do bairro com opções simples de CRUD onde é possível:
+
+- Cadastrar livro
+- Atualizar status do livro
+- Visualizar informações do livro
 
