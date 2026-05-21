@@ -48,3 +48,8 @@ Buscou-se abordar nesta parte do projeto os conceitos de gerenciamento de cache 
 - Autenticação local com passport-local
 
 Buscou-se abordar nesta parte do projeto os conceitos de autenticação de usuários a fim de bloquear páginas que necessitam de um cadastro/autenticação via rotas atravez do componente passport do node.
+
+## 2.4.Livro
+
+- Divisão do login entre usuario, bibliotecario, admin
+- Bloqueio de rotas com base nos perfils de usuário

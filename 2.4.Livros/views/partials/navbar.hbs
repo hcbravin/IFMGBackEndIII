@@ -1,0 +1,52 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-success mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="/"><i class="bi bi-book me-1"></i> BiboLivre</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav">
+                {{#if (eq user.perfil 'bibliotecario')}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/livros/cadastrar"><i class="bi bi-plus-square me-1"></i> Cadastrar Livro</a>
+                </li>
+                {{/if}}
+                {{#if (eq user.perfil 'admin')}} <!-- ../user porque estamos dentro do each -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/responsavel"><i class="bi bi-person-badge me-1"></i> Bibliotecário</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/livros/historico"><i class="bi bi-graph-up me-1"></i> Histórico</a>
+                </li>
+                {{/if}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/historia"><i class="bi bi-book me-1"></i> Nossa História</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/faq"><i class="bi bi-question-circle me-1"></i> FAQ</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                {{#if user}}
+                <li class="nav-item">
+                    <span class="navbar-text me-3">Olá, <strong>{{user.nome}}</strong></span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-text" href="/usuarios/logout"><span class="btn btn-sm py-1 btn-light">Sair</span></a>
+                </li>
+                {{else}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/usuarios/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/usuarios/cadastro">Cadastro</a>
+                </li>
+                {{/if}}
+            </ul>
+        </div>
+
+        
+    </div>
+</nav>
