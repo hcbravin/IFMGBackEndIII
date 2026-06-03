@@ -53,3 +53,20 @@ Buscou-se abordar nesta parte do projeto os conceitos de autenticação de usuá
 
 - Divisão do login entre usuario, bibliotecario, admin
 - Bloqueio de rotas com base nos perfils de usuário
+
+Buscamos aqui criar um sistema de tipos de perfils com acessos a funcionalidades diferentes. Cada perfil poderá acessar uma determinada funcionalidade. Além disso, o usuário não logado terá menos dados exibidos.
+
+## 3.1.Livros
+
+Aqui buscamos trabalhar a ideia de API. Deste modo, deixamos a interface gráfica e focamos em requisições REST via API usando JSON. Todos os processos se mantem, exceto, a autenticação por usuário.
+
+## 3.2.Livros
+
+Implementação de cache no sistema de API, visto que algumas informações não precisam ser renderizadas pelo servidor e podem ser armazenadas em cache pelo cliente em tempos pré-definidos.
+
+## 3.3.Livros
+
+Implementamos o sistema de documentação. Para isso usamos o Swagger como recurso. Foi necessário criar o arquivo config/swagger-autogen.js. 
+
+- Adição de nova rota para acesso a documentação gerada /api-docs
+- Comando no package.json para automatizar a criação.

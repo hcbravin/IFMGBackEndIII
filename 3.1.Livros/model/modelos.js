@@ -1,0 +1,87 @@
+const { DataTypes, Model } = require('sequelize');
+const sequelize = require('./server.js');
+
+// Definição do modelo Categoria
+class Categoria extends Model { }
+
+Categoria.init(
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+            allowNull: false
+        },
+        nome: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    },
+    {
+        sequelize,
+        freezeTableName: true,
+        createdAt: 'criada_em',
+        updatedAt: 'atualizada_em'
+    }
+);
+
+// Definição do modelo Livro
+class Livro extends Model { }
+
+Livro.init(
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+            allowNull: false
+        },
+        titulo: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        autor: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        categoria_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'Categoria',
+                key: 'id'
+            }
+        },
+        status: {
+            type: DataTypes.ENUM('disponivel', 'emprestado'),
+            allowNull: false,
+            defaultValue: 'disponivel'
+        }
+    },
+    {
+        sequelize,
+        freezeTableName: true,
+        createdAt: 'criada_em',
+        updatedAt: 'atualizada_em'
+    }
+);
+
+// Associações
+Livro.belongsTo(Categoria, {
+    foreignKey: 'categoria_id',
+    as: 'categoria'
+});
+
+Categoria.hasMany(Livro, {
+    foreignKey: 'categoria_id',
+    as: 'livros'
+});
+
+// Sincronização
+sequelize.sync({ alter: true }).then(() => {
+    console.log('Modelos sincronizados com o banco de dados.');
+}).catch((error) => {
+    console.error('Erro ao sincronizar modelos com o banco de dados: ', error);
+});
+
+module.exports = { Categoria, Livro };

@@ -1,0 +1,600 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API de Livros",
+    "version": "1.0.0",
+    "description": "API REST para gerenciamento de livros e empréstimos"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Index"
+        ],
+        "summary": "Retorna informações gerais da API",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/servicos": {
+      "get": {
+        "tags": [
+          "Index"
+        ],
+        "summary": "Lista os serviços disponíveis na API",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/livros": {
+      "get": {
+        "tags": [
+          "Livros"
+        ],
+        "summary": "Lista todos os livros",
+        "description": "Retorna uma lista de livros com opção de filtrar por categoria e status",
+        "parameters": [
+          {
+            "name": "categoria_id",
+            "in": "query",
+            "type": "integer",
+            "required": false,
+            "description": "ID da categoria para filtrar os livros"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "enum": [
+              "disponivel",
+              "emprestado"
+            ],
+            "description": "Status do livro para filtrar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de livros retornada com sucesso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/LivroCompleto"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno ao listar livros"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Livros"
+        ],
+        "summary": "Cria um novo livro",
+        "description": "Adiciona um novo livro ao catálogo",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Dados do novo livro",
+            "schema": {
+              "$ref": "#/definitions/NovoLivro"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Livro criado com sucesso",
+            "schema": {
+              "$ref": "#/definitions/LivroCompleto"
+            }
+          },
+          "400": {
+            "description": "Dados inválidos ou categoria não encontrada"
+          }
+        }
+      }
+    },
+    "/livros/{id}": {
+      "get": {
+        "tags": [
+          "Livros"
+        ],
+        "summary": "Busca um livro pelo ID",
+        "description": "Retorna os detalhes de um livro específico",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID do livro a ser buscado"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Livro encontrado com sucesso",
+            "schema": {
+              "$ref": "#/definitions/LivroCompleto"
+            }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "404": {
+            "description": "Livro não encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Livros"
+        ],
+        "summary": "Atualiza um livro existente",
+        "description": "Atualiza parcialmente os dados de um livro (apenas campos enviados)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID do livro a ser atualizado"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Dados para atualização (todos opcionais)",
+            "schema": {
+              "$ref": "#/definitions/AtualizarLivro"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Livro atualizado com sucesso",
+            "schema": {
+              "$ref": "#/definitions/LivroCompleto"
+            }
+          },
+          "400": {
+            "description": "ID inválido ou dados inválidos"
+          },
+          "404": {
+            "description": "Livro não encontrado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Livros"
+        ],
+        "summary": "Remove um livro",
+        "description": "Remove permanentemente um livro do catálogo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID do livro a ser removido"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Livro removido com sucesso (sem conteúdo)"
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "404": {
+            "description": "Livro não encontrado"
+          }
+        }
+      }
+    },
+    "/livros/{id}/emprestar": {
+      "put": {
+        "tags": [
+          "Livros"
+        ],
+        "summary": "Empresta um livro",
+        "description": "Altera o status do livro para \"emprestado\"",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID do livro a ser emprestado"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Livro emprestado com sucesso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Livro emprestado com sucesso"
+                        }
+                      }
+                    },
+                    "livro": {
+                      "$ref": "#/definitions/LivroCompleto"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou livro já está emprestado"
+          },
+          "404": {
+            "description": "Livro não encontrado"
+          }
+        }
+      }
+    },
+    "/livros/{id}/devolver": {
+      "put": {
+        "tags": [
+          "Livros"
+        ],
+        "summary": "Devolve um livro",
+        "description": "Altera o status do livro para \"disponivel\"",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID do livro a ser devolvido"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Livro devolvido com sucesso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "Livro devolvido com sucesso"
+                        }
+                      }
+                    },
+                    "livro": {
+                      "$ref": "#/definitions/LivroCompleto"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou livro já está disponível"
+          },
+          "404": {
+            "description": "Livro não encontrado"
+          }
+        }
+      }
+    },
+    "/categorias": {
+      "get": {
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Lista todas as categorias",
+        "description": "Retorna uma lista de todas as categorias cadastradas",
+        "responses": {
+          "200": {
+            "description": "Lista de categorias retornada com sucesso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/Categoria"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno ao listar categorias"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Cria uma nova categoria",
+        "description": "Adiciona uma nova categoria ao sistema",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Dados da nova categoria",
+            "schema": {
+              "$ref": "#/definitions/NovaCategoria"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Categoria criada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Categoria"
+            }
+          },
+          "400": {
+            "description": "Nome da categoria é obrigatório"
+          }
+        }
+      }
+    },
+    "/categorias/{id}": {
+      "get": {
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Busca uma categoria pelo ID",
+        "description": "Retorna os detalhes de uma categoria específica",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID da categoria a ser buscada"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoria encontrada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Categoria"
+            }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "404": {
+            "description": "Categoria não encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Atualiza uma categoria existente",
+        "description": "Atualiza os dados de uma categoria",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID da categoria a ser atualizada"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Dados para atualização",
+            "schema": {
+              "$ref": "#/definitions/AtualizarCategoria"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoria atualizada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Categoria"
+            }
+          },
+          "400": {
+            "description": "ID inválido ou nome inválido"
+          },
+          "404": {
+            "description": "Categoria não encontrada"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Categorias"
+        ],
+        "summary": "Remove uma categoria",
+        "description": "Remove permanentemente uma categoria do sistema",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID da categoria a ser removida"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Categoria removida com sucesso (sem conteúdo)"
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "404": {
+            "description": "Categoria não encontrada"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "LivroCompleto": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "titulo": {
+          "type": "string",
+          "example": "Dom Casmurro"
+        },
+        "autor": {
+          "type": "string",
+          "example": "Machado de Assis"
+        },
+        "status": {
+          "type": "string",
+          "example": "disponivel"
+        },
+        "categoria_id": {
+          "type": "number",
+          "example": 1
+        },
+        "criada_em": {
+          "type": "string",
+          "example": "2026-06-03T10:00:00.000Z"
+        },
+        "atualizada_em": {
+          "type": "string",
+          "example": "2026-06-03T10:00:00.000Z"
+        },
+        "categoria": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "example": 1
+            },
+            "nome": {
+              "type": "string",
+              "example": "Romance"
+            }
+          }
+        }
+      }
+    },
+    "NovoLivro": {
+      "type": "object",
+      "properties": {
+        "titulo": {
+          "type": "string",
+          "example": "Dom Casmurro"
+        },
+        "autor": {
+          "type": "string",
+          "example": "Machado de Assis"
+        },
+        "categoria_id": {
+          "type": "number",
+          "example": 1
+        },
+        "status": {
+          "type": "string",
+          "example": "disponivel"
+        }
+      },
+      "required": [
+        "titulo",
+        "autor",
+        "categoria_id"
+      ]
+    },
+    "AtualizarLivro": {
+      "type": "object",
+      "properties": {
+        "titulo": {
+          "type": "string",
+          "example": "Dom Casmurro (Edição Especial)"
+        },
+        "autor": {
+          "type": "string",
+          "example": "Machado de Assis"
+        },
+        "categoria_id": {
+          "type": "number",
+          "example": 1
+        },
+        "status": {
+          "type": "string",
+          "example": "emprestado"
+        }
+      }
+    }
+  }
+}
